@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
 import Card from '../../components/Card'
 import styled from 'styled-components'
-import colors from '../../utils/style/colors'
+// import colors from '../../utils/style/colors'
 import { Loader } from '../../utils/style/Atoms'
+import { useFetch, useTheme } from '../../utils/hooks'
 
 const CardsContainer = styled.div`
   display: grid;
@@ -15,7 +15,7 @@ const CardsContainer = styled.div`
 
 const PageTitle = styled.h1`
   font-size: 30px;
-  color: black;
+  color: ${({ theme }) => (theme === 'light' ? '#000000' : '#ffffff')};
   text-align: center;
   padding-bottom: 30px;
 `
@@ -23,7 +23,7 @@ const PageTitle = styled.h1`
 const PageSubtitle = styled.h2`
   font-size: 20px;
   font-weight: 300;
-  color: ${colors.primary};
+  color: ${({ theme }) => (theme === 'light' ? '#000000' : '#ffffff')};
   text-align: center;
   padding-bottom: 30px;
 `
@@ -34,23 +34,12 @@ const LoaderWrapper = styled.div`
 `
 
 function Freelances() {
-  const [freelancersList, setFreelancersList] = useState([])
-  const [isDataLoading, setDataLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const { theme } = useTheme()
+  const { data, isLoading, error } = useFetch(
+    `http://localhost:8000/freelances`
+  )
 
-  useEffect(() => {
-    setDataLoading(true)
-    fetch(`http://localhost:8000/freelances`)
-      .then((response) => response.json())
-      .then(({ freelancersList }) => {
-        setFreelancersList(freelancersList)
-        setDataLoading(false)
-      })
-      .catch((error) => {
-        console.log(error)
-        setError(true)
-      })
-  }, [])
+  const freelancersList = data?.freelancersList
 
   if (error) {
     return <span>Oups! un problème est survenue</span>
@@ -58,13 +47,13 @@ function Freelances() {
 
   return (
     <div>
-      <PageTitle>Trouvez votre prestataire</PageTitle>
-      <PageSubtitle>
+      <PageTitle theme={theme}>Trouvez votre prestataire</PageTitle>
+      <PageSubtitle theme={theme}>
         Chez Shiny nous réunissons les meilleurs profils pour vous
       </PageSubtitle>
-      {isDataLoading ? (
+      {isLoading ? (
         <LoaderWrapper>
-          <Loader />
+          <Loader theme={theme} />
         </LoaderWrapper>
       ) : (
         <CardsContainer>

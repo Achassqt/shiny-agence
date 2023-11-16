@@ -2,13 +2,15 @@ import PropTypes from 'prop-types'
 import DefaultPicture from '../../assets/profile.png'
 import styled from 'styled-components'
 import colors from '../../utils/style/colors'
+import { useTheme } from '../../utils/hooks'
 
 const CartWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   padding: 15px;
-  background-color: ${colors.backgroundLight};
+  background-color: ${({ theme }) =>
+    theme === 'light' ? colors.backgroundLight : colors.backgroundDark};
   border-radius: 30px;
   width: 300px;
   height: 300px;
@@ -20,7 +22,7 @@ const CartWrapper = styled.div`
 `
 
 const CartLabel = styled.span`
-  color: ${colors.primary};
+  color: ${({ theme }) => (theme === 'light' ? colors.primary : '#ffffff')};
   font-size: 22px;
   font-weight: normal;
   padding-left: 15px;
@@ -34,18 +36,19 @@ const CartImage = styled.img`
 `
 
 const CartTitle = styled.span`
-  color: black;
+  color: ${({ theme }) => (theme === 'light' ? '#000000' : '#ffffff')};
   font-size: 22px;
   font-weight: normal;
   align-self: center;
 `
 
 function Card({ label, title, picture }) {
+  const { theme } = useTheme()
   return (
-    <CartWrapper>
-      <CartLabel>{label}</CartLabel>
+    <CartWrapper theme={theme}>
+      <CartLabel theme={theme}>{label}</CartLabel>
       <CartImage src={picture} alt="freelance" />
-      <CartTitle>{title}</CartTitle>
+      <CartTitle theme={theme}>{title}</CartTitle>
     </CartWrapper>
   )
 }
